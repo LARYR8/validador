@@ -5,7 +5,7 @@ FROM python:3.9-slim
 WORKDIR /app
 
 # Copie os arquivos de requisitos
-COPY requeriments.txt .
+COPY requirements.txt .
 
 # Instale as dependências do Python
 RUN pip install --no-cache-dir -r requeriments.txt
