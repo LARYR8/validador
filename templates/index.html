@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados da Validação de Telefones</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    <style>
+        body {
+            background-color: #ffffff;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .header, .title, .button {
+            color: #111111;
+        }
+        .title {
+            margin-bottom: 20px;
+        }
+        .button.is-primary {
+            background-color: #F8B408;
+            border-color: #F8B408;
+        }
+        .button.is-primary:hover {
+            background-color: #e0a207;
+            border-color: #e0a207;
+        }
+        .box, .table-container {
+            background-color: #ffffff;
+            border-radius: 5px;
+            width: 450px;
+        }
+        th, td {
+            text-align: center;
+            color: #111111;
+        }
+        th a {
+            color: #111111;
+        }
+        .logo {
+            display: block;
+            margin: 0 auto 20px;
+            max-width: 200px;
+        }
+        .pagination-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .download-button {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <section class="section">
+        <div class="container">
+            <img src="{{ url_for('static', filename='comm_logo.png') }}" alt="Comm Logo" class="logo">
+            <h1 class="title">Validação de Telefones</h1>
+            <form action="/" method="post" enctype="multipart/form-data" class="box">
+                <div class="field">
+                    <label class="label" for="file">Escolha uma nova planilha para validar:</label>
+                    <div class="control">
+                        <input class="input" type="file" id="file" name="file">
+                        <p class="help">O arquivo deve estar em <strong>.xlsx</strong> e conter um número por linha no formato <strong>5511999999999</strong>.</p>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="control">
+                        <button class="button is-primary" type="submit">Upload</button>
+                    </div>
+                </div>
+            </form>
+            {% if resultados %}
+            <div class="table-container">
+                <label for="rowsPerPage">Linhas por página:</label>
+                <select id="rowsPerPage" onchange="updatePagination()">
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                </select>
+                <table class="table is-striped is-bordered" style="
+                margin-top: 20px;
+            ">
+                    <thead>
+                        <tr>
+                            <th>Telefone</th>
+                            <th><a href="#" onclick="sortTable()">Existe no WhatsApp</a></th>
+                        </tr>
+                    </thead>
+                    <tbody id="resultados-tbody">
+                        {% for resultado in resultados %}
+                        <tr>
+                            <td>{{ resultado.phone }}</td>
+                            <td>{{ 'Sim' if resultado.exists else 'Não' }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div class="pagination-container">
+                    <button class="button" onclick="previousPage()">Anterior</button>
+                    <button class="button" onclick="nextPage()">Próximo</button>
+                </div>
+                <div class="download-button">
+                    <a href="{{ url_for('download_results') }}" class="button is-primary">Download Resultados</a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <script>
+        let currentPage = 1;
+        let rowsPerPage = 5;
+
+        function updatePagination() {
+            rowsPerPage = parseInt(document.getElementById("rowsPerPage").value);
+            displayTable();
+        }
+
+        function displayTable() {
+            const table = document.getElementById("resultados-tbody");
+            const rows = table.rows;
+            const totalRows = rows.length;
+            const totalPages = Math.ceil(totalRows / rowsPerPage);
+            
+            for (let i = 0; i < totalRows; i++) {
+                rows[i].style.display = "none";
+            }
+            
+            for (let i = (currentPage - 1) * rowsPerPage; i < currentPage * rowsPerPage && i < totalRows; i++) {
+                rows[i].style.display = "";
+            }
+        }
+
+        function previousPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                displayTable();
+            }
+        }
+
+        function nextPage() {
+            const table = document.getElementById("resultados-tbody");
+            const totalRows = table.rows.length;
+            const totalPages = Math.ceil(totalRows / rowsPerPage);
+            
+            if (currentPage < totalPages) {
+                currentPage++;
+                displayTable();
+            }
+        }
+
+        function sortTable() {
+            const table = document.getElementById("resultados-tbody");
+            let rows = Array.from(table.rows);
+            rows.sort((a, b) => {
+                const x = a.getElementsByTagName("TD")[1].innerText.toLowerCase();
+                const y = b.getElementsByTagName("TD")[1].innerText.toLowerCase();
+                return x.localeCompare(y);
+            });
+            rows.forEach(row => table.appendChild(row));
+            displayTable();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            displayTable();
+        });
+    </script>
+</body>
+</html>
