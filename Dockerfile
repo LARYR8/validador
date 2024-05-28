@@ -8,7 +8,7 @@ WORKDIR /app
 COPY requirements.txt .
 
 # Instale as dependências do Python
-RUN pip install --no-cache-dir -r requeriments.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copie o restante da aplicação
 COPY . .
