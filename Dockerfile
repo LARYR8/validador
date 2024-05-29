@@ -16,8 +16,5 @@ COPY . .
 # Exponha a porta que a aplicação Flask usará
 EXPOSE 8080
 
-# Defina a variável de ambiente para permitir a inicialização do Flask
-ENV FLASK_APP=app.py
-
-# Comando para executar o servidor Flask
-CMD ["flask", "run", "--host=0.0.0.0", "--port=8080"]
+# Comando para executar o servidor Flask com gunicorn
+CMD ["gunicorn", "--bind", "0.0.0.0:8080", "app:app"]
