@@ -3,46 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resultados da Validação de Telefones</title>
+    <title>Validação de Telefones</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
     <style>
         body {
-            background-color: #ffffff;
+            background-color: #f5f5f5;
             padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
         }
-        .header, .title, .button {
-            color: #111111;
-        }
-        .title {
-            margin-bottom: 20px;
-        }
-        .button.is-primary {
+        .hero {
             background-color: #F8B408;
-            border-color: #F8B408;
+            color: #fff;
         }
-        .button.is-primary:hover {
-            background-color: #e0a207;
-            border-color: #e0a207;
+        .hero-body {
+            padding: 2rem 1.5rem;
         }
-        .box, .table-container {
-            background-color: #ffffff;
-            border-radius: 5px;
-            width: 450px;
+        .box {
+            margin-top: 20px;
         }
-        th, td {
+        .table-container {
+            margin-top: 20px;
+        }
+        .table th, .table td {
             text-align: center;
-            color: #111111;
-        }
-        th a {
-            color: #111111;
-        }
-        .logo {
-            display: block;
-            margin: 0 auto 20px;
-            max-width: 200px;
         }
         .pagination-container {
             margin-top: 20px;
@@ -50,43 +32,67 @@
         }
         .download-button {
             margin-top: 20px;
+            text-align: center;
+        }
+        .footer {
+            padding: 2rem 1.5rem;
+            background-color: #F8B408;
+            color: #fff;
+            text-align: center;
         }
     </style>
 </head>
 <body>
+    <section class="hero is-primary" style="background-color: #F8B408;">
+        <div class="hero-body">
+            <div class="container">
+                <img src="{{ url_for('static', filename='icone_comm_ww.png') }}" alt="Logo" class="image is-128x128" style="margin: 0 auto;">
+                <h1 class="title has-text-centered">
+                    Validação de Telefones
+                </h1>
+
+            </div>
+        </div>
+    </section>
+
     <section class="section">
         <div class="container">
-            <img src="{{ url_for('static', filename='comm_logo.png') }}" alt="Comm Logo" class="logo">
-            <h1 class="title">Validação de Telefones</h1>
-            <form action="/" method="post" enctype="multipart/form-data" class="box">
-                <div class="field">
-                    <label class="label" for="file">Escolha uma nova planilha para validar:</label>
-                    <div class="control">
-                        <input class="input" type="file" id="file" name="file">
-                        <p class="help">O arquivo deve estar em <strong>.xlsx</strong> e conter um número por linha no formato <strong>5511999999999</strong>.</p>
+            <div class="box">
+                <form action="/" method="post" enctype="multipart/form-data">
+                    <div class="field">
+                        <label class="label">Escolha uma nova planilha para validar:</label>
+                        <div class="control">
+                            <input class="input" type="file" id="file" name="file">
+                            <p class="help">O arquivo deve estar em <strong>.xlsx</strong> e conter um número por linha no formato <strong>5511999999999</strong>.</p>
+                        </div>
                     </div>
-                </div>
-                <div class="field">
-                    <div class="control">
-                        <button class="button is-primary" type="submit">Upload</button>
+                    <div class="field">
+                        <div class="control">
+                            <button class="button is-primary" style="background-color: #F8B408;font-weight: 500;" type="submit">Upload</button>
+                        </div>
                     </div>
-                </div>
-            </form>
+                </form>
+            </div>
+
             {% if resultados %}
             <div class="table-container">
-                <label for="rowsPerPage">Linhas por página:</label>
-                <select id="rowsPerPage" onchange="updatePagination()">
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                    <option value="20">20</option>
-                </select>
-                <table class="table is-striped is-bordered" style="
-                margin-top: 20px;
-            ">
+                <div class="field">
+                    <label for="rowsPerPage" class="label">Linhas por página:</label>
+                    <div class="control">
+                        <div class="select">
+                            <select id="rowsPerPage" onchange="updatePagination()">
+                                <option value="5">5</option>
+                                <option value="10">10</option>
+                                <option value="20">20</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <table class="table is-striped is-hoverable is-fullwidth">
                     <thead>
                         <tr>
                             <th>Telefone</th>
-                            <th><a href="#" onclick="sortTable()">Existe no WhatsApp</a></th>
+                            <th><a href="#" onclick="sortTable()" style="color: #0071AD;">Existe no WhatsApp</a></th>
                         </tr>
                     </thead>
                     <tbody id="resultados-tbody">
@@ -103,12 +109,20 @@
                     <button class="button" onclick="nextPage()">Próximo</button>
                 </div>
                 <div class="download-button">
-                    <a href="{{ url_for('download_results') }}" class="button is-primary">Download Resultados</a>
+                    <a href="{{ url_for('download_results') }}" class="button is-primary"  style="background-color: #F8B408;font-weight: 500;" >Download Resultados</a>
                 </div>
             </div>
             {% endif %}
         </div>
     </section>
+
+    <footer class="footer">
+        <div class="content">
+            <p>
+                <strong>Validação de Telefones</strong> por <a href="#">Comm</a>. Todos os direitos reservados.
+            </p>
+        </div>
+    </footer>
 
     <script>
         let currentPage = 1;
