@@ -7,7 +7,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 def validar_telefones_em_lote(numeros):
     try:
         instancia = '3CF688310DEA207A60B22A268ACD4084'  # ID da instância
-        token = '44FCAA7CF3124A1CA04018F0'  # Token da instância
+        token = 'F2F83CBE7010AF232D0B9C4A'  # Token da instância
         url = f'https://api.z-api.io/instances/{instancia}/token/{token}/phone-exists-batch'
         
         headers = {
@@ -28,3 +28,4 @@ def validar_telefones_em_lote(numeros):
         if e.response:
             print(f"Resposta do servidor: {e.response.text}")
         return {'exists': False}
+
